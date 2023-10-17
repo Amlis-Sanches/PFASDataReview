@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 PFASdata = pd.read_excel(r'C:\Users\natha\Documents\Coding\PFASDataReview\PFAS Project Lab Known Contamination Site Tracker - May 2023 for sharing with lat_long.xlsx', sheet_name='USA Contamination Sites', engine='openpyxl')
 PFAS = pd.DataFrame(PFASdata)
-print(PFAS.head())
+#print(PFAS.head())
 print(PFAS.columns)
 states_list = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", 
                "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois",
@@ -14,6 +14,12 @@ states_list = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colora
                "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania",
                "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah",
                "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"]
+
+
+#Check if there are any nan
+print(PFAS['PFAS Level (ppt)'].isnull().sum())
+#Remove rows without PFAS data
+PFAS = PFAS.dropna(subset=['PFAS Level (ppt)'])
 
 
 # Count the number of Sights for each state
@@ -31,22 +37,34 @@ State_Summary = pd.DataFrame({
     'Max Concentration (ppt)': concentration_range['max'].values,
     'Concentration Range (ppt)': concentration_range['range'].values
 })
+State_Summary.set_index('State', inplace=True)
+
+#Calculate the average
+State_Summary['Average Concentration'] = PFAS.groupby('State')['PFAS Level (ppt)'].mean()
+State_Summary['Standard Deviation'] = PFAS.groupby('State')['PFAS Level (ppt)'].std()
 
 #-------------------------------------------------------------#
 #Remove all other locaitons besides States                    #
 #-------------------------------------------------------------#
-State_Summary = State_Summary[State_Summary['State'].isin(states_list)]
+State_Summary = State_Summary[State_Summary.index.isin(states_list)]
 
 # Find missing states
-missing_states = [state for state in states_list if state not in State_Summary['State'].tolist()]
+missing_states = [state for state in states_list if state not in State_Summary.index.tolist()]
 
 # For each missing state, append a new row to the State_Summary dataframe
 for state in missing_states:
-    new_row = {'State': state, 'Number of Sights': 0, 'Concentration Range': 0}  # You can adjust the 'Concentration Range' value as necessary
+    new_row = {'state': state, 'Number of Sights': 0, 'Concentration Range': 0}  # You can adjust the 'Concentration Range' value as necessary
     State_Summary = State_Summary.append(new_row, ignore_index=True)
 
-State_Summary.set_index('State', inplace=True)
-print(State_Summary)
+#--------------------------------------------------#
+#Reviewing the concentrations of nearby states to  #
+#identify if there is a trend compaired to the     #
+#the highest recorded state, new hampshire         #
+#--------------------------------------------------#
+#only use selected states
+states_list = ['New Hampshire', 'Maine', 'Vermont', 'Massachusetts']
+df_NH = State_Summary[State_Summary.index.isin(states_list)]
+print(df_NH)
 
 #--------------------------------------------------#
 #           Graphing Section                       #
@@ -87,7 +105,7 @@ con = 'Concentration (ppt)'
 graph_bar(State_Summary.index, State_Summary['Number of Sights'], 'Number of Test Locations', 'States', 'Number of Sights')
 
 #Graph Lowest Concentration
-graph_bar(State_Summary.index, State_Summary['Min Concentration (ppt)'], 'Lowest recorded concentration of PFAS', 'States', con)
+graph_bar(State_Summary.index, State_Summary['Min Concentration (ppt)'], 'Lowest Recorded Concentration of PFAS', 'States', con)
 
 #Removig Idiho to get a review of smaller concentrations
 #----------------------------------------------------------------------#
@@ -96,10 +114,14 @@ graph_bar(State_Summary.index, State_Summary['Min Concentration (ppt)'], 'Lowest
 #df.drop(df[df['Grad Intention'] == 'Undecided'].index, inplace = True)#
 #----------------------------------------------------------------------#
 df_min = State_Summary[State_Summary.index != 'Idaho']
-graph_bar(df_min.index, df_min['Min Concentration (ppt)'], 'Lowest recorded concentration of PFAS', 'States', con)
+graph_bar(df_min.index, df_min['Min Concentration (ppt)'], 'Lowest Recorded Concentration of PFAS', 'States', con)
 
 #Graph Highest Concentration
-graph_bar(State_Summary.index, State_Summary['Max Concentration (ppt)'], 'Lowest recorded concentration of PFAS', 'States', con)
+graph_bar(State_Summary.index, State_Summary['Max Concentration (ppt)'], 'Highest Recorded Concentration of PFAS', 'States', con)
+
+#Graph the average concentration
+graph_bar(State_Summary.index, State_Summary['Average Concentration'], 'Average Concentration of Each State', 'State', con)
 
 #Graph Concentration Comparison
 overlapped_bar(State_Summary[['Min Concentration (ppt)','Max Concentration (ppt)']], show=True,title='Concentration of PFAS per State', xlabel='States', ylabel=con)
+
