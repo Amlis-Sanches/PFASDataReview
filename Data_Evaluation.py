@@ -169,29 +169,26 @@ model = sm.OLS(y, X)
 results = model.fit()
 print(results.summary())
 #--------------------------------------------------------------------------------------------------------#
-#R-squared: This value is 0.009, indicating that only 0.9% of the 
-# variability in the average PFAS concentration is explained by 
-# the number of sites. An 
-#this low suggests that the model does not fit your data well.
-#Adjusted R-squared: This value is even slightly negative (-0.011). 
-#While will always increase when a new predictor is added, the adjusted 
-#takes into account the number of predictors in the model and can 
-# decrease if a predictor doesn't improve the model's fit. A negative adjusted 
-#suggests that the model fits the data worse than a horizontal line.
-#F-statistic and Prob (F-statistic): The F-statistic is 0.4505, and 
-# the associated p-value is 0.505. This means the model isn't significantly 
-# better at predicting the average PFAS concentration than a model 
-# with no predictors (just a mean). Generally, a p-value below 0.05 
-# is considered statistically significant. In your case, it's well 
-# above that threshold.
-#Coefficient for Number of Sights: The coefficient is -1874.3524, 
-# suggesting a negative relationship. However, the p-value for this 
-# coefficient is 0.505, which means it is not statistically significant. 
-# The 95% confidence interval for this coefficient spans from -7489.044 
-# to 3740.339, which includes zero. This further emphasizes that there 
-# isn't strong evidence of a significant relationship.
-#Omnibus, Skew, and Kurtosis: The Omnibus test p-value is 0.000, 
-# suggesting the residuals are not normally distributed. The high 
-# Skew and Kurtosis values further indicate that the model's assumptions 
+#R-squared: This value is 0.009, indicating that only 0.9% of the variability in the average PFAS 
+# concentration is explained by the number of sites. An R2 this low suggests that the model does not fit 
+# your data well.
+#
+#Adjusted R-squared: This value is even slightly negative (-0.011). While R2 will always increase when a 
+# new predictor is added, the adjusted #R2 takes into account the number of predictors in the model and 
+# can decrease if a predictor doesn't improve the model's fit. A negative adjusted #R2 suggests that the 
+# model fits the data worse than a horizontal line.
+#
+#F-statistic and Prob (F-statistic): The F-statistic is 0.4505, and the associated p-value is 0.505. This 
+# means the model isn't significantly better at predicting the average PFAS concentration than a model 
+# with no predictors (just a mean). Generally, a p-value below 0.05 is considered statistically 
+# significant. In your case, it's well above that threshold.
+#
+#Coefficient for Number of Sights: The coefficient is -1874.3524, suggesting a negative relationship. 
+# However, the p-value for this coefficient is 0.505, which means it is not statistically significant. 
+# The 95% confidence interval for this coefficient spans from -7489.044 to 3740.339, which includes zero. 
+# This further emphasizes that there isn't strong evidence of a significant relationship.
+#
+#Omnibus, Skew, and Kurtosis: The Omnibus test p-value is 0.000, suggesting the residuals are not 
+# normally distributed. The high Skew and Kurtosis values further indicate that the model's assumptions 
 # are not being met.
 #--------------------------------------------------------------------------------------------------------#
