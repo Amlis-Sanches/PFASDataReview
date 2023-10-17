@@ -1,6 +1,9 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from scipy.stats import ttest_ind
+import statsmodels.api as sm
+
 
 PFASdata = pd.read_excel(r'C:\Users\natha\Documents\Coding\PFASDataReview\PFAS Project Lab Known Contamination Site Tracker - May 2023 for sharing with lat_long.xlsx', sheet_name='USA Contamination Sites', engine='openpyxl')
 PFAS = pd.DataFrame(PFASdata)
@@ -22,8 +25,8 @@ print(PFAS['PFAS Level (ppt)'].isnull().sum())
 PFAS = PFAS.dropna(subset=['PFAS Level (ppt)'])
 
 
-# Count the number of Sights for each state
-number_of_Sights = PFAS['State'].value_counts()
+# Count the number of Sites for each state
+number_of_Sites = PFAS['State'].value_counts()
 
 # Compute the min and max concentrations for each state
 concentration_range = PFAS.groupby('State')['PFAS Level (ppt)'].agg(['min', 'max'])
@@ -31,8 +34,8 @@ concentration_range['range'] = concentration_range['max'] - concentration_range[
 
 # Combine the data
 State_Summary = pd.DataFrame({
-    'State': number_of_Sights.index,
-    'Number of Sights': number_of_Sights.values,
+    'State': number_of_Sites.index,
+    'Number of Sites': number_of_Sites.values,
     'Min Concentration (ppt)': concentration_range['min'].values,
     'Max Concentration (ppt)': concentration_range['max'].values,
     'Concentration Range (ppt)': concentration_range['range'].values
@@ -53,7 +56,7 @@ missing_states = [state for state in states_list if state not in State_Summary.i
 
 # For each missing state, append a new row to the State_Summary dataframe
 for state in missing_states:
-    new_row = {'state': state, 'Number of Sights': 0, 'Concentration Range': 0}  # You can adjust the 'Concentration Range' value as necessary
+    new_row = {'state': state, 'Number of Sites': 0, 'Concentration Range': 0}  # You can adjust the 'Concentration Range' value as necessary
     State_Summary = State_Summary.append(new_row, ignore_index=True)
 
 #--------------------------------------------------#
@@ -100,9 +103,9 @@ def graph_bar(X_Tick, Data, title='', xlabel ='', ylabel =''):
     plt.tight_layout()  # This is to ensure all labels fit well in the plot
     plt.show()
 
-# graphing tested sights
+# graphing tested Sites
 con = 'Concentration (ppt)'
-graph_bar(State_Summary.index, State_Summary['Number of Sights'], 'Number of Test Locations', 'States', 'Number of Sights')
+graph_bar(State_Summary.index, State_Summary['Number of Sites'], 'Number of Test Locations', 'States', 'Number of Sites')
 
 #Graph Lowest Concentration
 graph_bar(State_Summary.index, State_Summary['Min Concentration (ppt)'], 'Lowest Recorded Concentration of PFAS', 'States', con)
@@ -125,3 +128,69 @@ graph_bar(State_Summary.index, State_Summary['Average Concentration'], 'Average 
 #Graph Concentration Comparison
 overlapped_bar(State_Summary[['Min Concentration (ppt)','Max Concentration (ppt)']], show=True,title='Concentration of PFAS per State', xlabel='States', ylabel=con)
 
+plt.figure(figsize=(12,8))
+plt.scatter(State_Summary['Number of Sites'], State_Summary['Average Concentration'])
+plt.xlabel('Number of Sites')
+plt.ylabel('Average Concentration(ppt)')
+plt.title('Graphic Visual for Comparison between Number of Sites and Concentration')
+plt.show()
+
+#------------------------------------------Statistics---------------------------------------------------#
+#Performing an analysis to see if there is a corrolation between number of Sites and Average concentration
+#using a Corelation because it's reviewing the states total number of samples and the PFAS concentration. 
+
+
+#--------------------------------------------------------------------------------------------------------#
+#A correlation coefficient of -0.0964 suggests a very weak negative relationship between the number of 
+# samples taken in a state and the average PFAS level for each state. In this context, a negative 
+# correlation means that as one variable (number of samples) increases, the other variable (average PFAS 
+# level) tends to decrease slightly, and vice versa.
+
+#However, the relationship is very weak, as the value is close to 0. In practical terms, there might be 
+# little to no real relationship between the two variables, or other factors might be influencing the 
+# relationship.
+
+#If you were expecting a stronger relationship or a different direction (positive or negative), it's 
+# worthwhile to consider other variables or factors that could be influencing the PFAS levels, or it 
+# might be that the number of samples simply isn't strongly related to the average PFAS level in a state.
+
+#Remember that correlation doesn't imply causation. Even if there was a stronger correlation, it wouldn't 
+# necessarily mean that the number of samples causes a change in PFAS levels.
+#--------------------------------------------------------------------------------------------------------#
+
+Corr_NOS_AC = State_Summary['Number of Sites'].corr(State_Summary['Average Concentration'])
+print('your corrolation coefficent is',Corr_NOS_AC)
+
+X = State_Summary['Number of Sites']
+y = State_Summary['Average Concentration']
+X = sm.add_constant(X)  # Adds a constant term to the predictor
+
+model = sm.OLS(y, X)
+results = model.fit()
+print(results.summary())
+
+#R-squared: This value is 0.009, indicating that only 0.9% of the 
+# variability in the average PFAS concentration is explained by 
+# the number of sites. An 
+#this low suggests that the model does not fit your data well.
+#Adjusted R-squared: This value is even slightly negative (-0.011). 
+#While will always increase when a new predictor is added, the adjusted 
+#takes into account the number of predictors in the model and can 
+# decrease if a predictor doesn't improve the model's fit. A negative adjusted 
+#suggests that the model fits the data worse than a horizontal line.
+#F-statistic and Prob (F-statistic): The F-statistic is 0.4505, and 
+# the associated p-value is 0.505. This means the model isn't significantly 
+# better at predicting the average PFAS concentration than a model 
+# with no predictors (just a mean). Generally, a p-value below 0.05 
+# is considered statistically significant. In your case, it's well 
+# above that threshold.
+#Coefficient for Number of Sights: The coefficient is -1874.3524, 
+# suggesting a negative relationship. However, the p-value for this 
+# coefficient is 0.505, which means it is not statistically significant. 
+# The 95% confidence interval for this coefficient spans from -7489.044 
+# to 3740.339, which includes zero. This further emphasizes that there 
+# isn't strong evidence of a significant relationship.
+#Omnibus, Skew, and Kurtosis: The Omnibus test p-value is 0.000, 
+# suggesting the residuals are not normally distributed. The high 
+# Skew and Kurtosis values further indicate that the model's assumptions 
+# are not being met.
