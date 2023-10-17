@@ -31,10 +31,12 @@ State_Summary = pd.DataFrame({
     'Max Concentration (ppt)': concentration_range['max'].values,
     'Concentration Range (ppt)': concentration_range['range'].values
 })
-State_Summary = State_Summary[State_Summary['State'].isin(states_list)]
+
 #-------------------------------------------------------------#
 #Remove all other locaitons besides States                    #
 #-------------------------------------------------------------#
+State_Summary = State_Summary[State_Summary['State'].isin(states_list)]
+
 # Find missing states
 missing_states = [state for state in states_list if state not in State_Summary['State'].tolist()]
 
@@ -43,16 +45,61 @@ for state in missing_states:
     new_row = {'State': state, 'Number of Sights': 0, 'Concentration Range': 0}  # You can adjust the 'Concentration Range' value as necessary
     State_Summary = State_Summary.append(new_row, ignore_index=True)
 
+State_Summary.set_index('State', inplace=True)
 print(State_Summary)
 
 #--------------------------------------------------#
 #           Graphing Section                       #
 #--------------------------------------------------#
-plt.figure(figsize=(12,8))  # This is to set the size of the chart
-plt.bar(State_Summary['State'], State_Summary['Number of Sights'])
-plt.xlabel('State')
-plt.ylabel('Number of Sights')
-plt.title('Number of Sights per State')
-plt.xticks(rotation=90)  # This is to rotate the x-labels for better visibility
-plt.tight_layout()  # This is to ensure all labels fit well in the plot
-plt.show()
+#Graping Functions: 
+def overlapped_bar(df, show=False, width=0.9, alpha=.5,title='', xlabel='', ylabel='', **plot_kwargs):
+    xlabel = xlabel or df.index.name
+    N = len(df)
+    M = len(df.columns)
+    indices = np.arange(N)
+    colors = ['steelblue', 'firebrick', 'goldenrod', 'gray'] * int(M / 5. + 1)
+    for i, label, color in zip(range(M), df.columns, colors):
+        kwargs = plot_kwargs
+        kwargs.update({'color': color, 'label': label})
+        plt.bar(indices, df[label], width=width, alpha=alpha if i else 1, **kwargs)
+        plt.xticks(indices + .5 * width,['{}'.format(idx) for idx in df.index.values])
+    plt.legend()
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.xticks(rotation=90)
+    plt.ylabel(ylabel)
+    if show:
+        plt.show()
+    return plt.gcf()
+
+def graph_bar(X_Tick, Data, title='', xlabel ='', ylabel =''):
+    plt.figure(figsize=(12,8))  # This is to set the size of the chart
+    plt.bar(X_Tick, Data)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+    plt.xticks(rotation=90)  # This is to rotate the x-labels for better visibility
+    plt.tight_layout()  # This is to ensure all labels fit well in the plot
+    plt.show()
+
+# graphing tested sights
+con = 'Concentration (ppt)'
+graph_bar(State_Summary.index, State_Summary['Number of Sights'], 'Number of Test Locations', 'States', 'Number of Sights')
+
+#Graph Lowest Concentration
+graph_bar(State_Summary.index, State_Summary['Min Concentration (ppt)'], 'Lowest recorded concentration of PFAS', 'States', con)
+
+#Removig Idiho to get a review of smaller concentrations
+#----------------------------------------------------------------------#
+#df = df[df['Grad Intention'] != 'Undecided']                          #
+#or                                                                    #
+#df.drop(df[df['Grad Intention'] == 'Undecided'].index, inplace = True)#
+#----------------------------------------------------------------------#
+df_min = State_Summary[State_Summary.index != 'Idaho']
+graph_bar(df_min.index, df_min['Min Concentration (ppt)'], 'Lowest recorded concentration of PFAS', 'States', con)
+
+#Graph Highest Concentration
+graph_bar(State_Summary.index, State_Summary['Max Concentration (ppt)'], 'Lowest recorded concentration of PFAS', 'States', con)
+
+#Graph Concentration Comparison
+overlapped_bar(State_Summary[['Min Concentration (ppt)','Max Concentration (ppt)']], show=True,title='Concentration of PFAS per State', xlabel='States', ylabel=con)
