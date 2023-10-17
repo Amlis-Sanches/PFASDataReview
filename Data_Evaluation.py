@@ -168,7 +168,7 @@ X = sm.add_constant(X)  # Adds a constant term to the predictor
 model = sm.OLS(y, X)
 results = model.fit()
 print(results.summary())
-
+#--------------------------------------------------------------------------------------------------------#
 #R-squared: This value is 0.009, indicating that only 0.9% of the 
 # variability in the average PFAS concentration is explained by 
 # the number of sites. An 
@@ -194,3 +194,4 @@ print(results.summary())
 # suggesting the residuals are not normally distributed. The high 
 # Skew and Kurtosis values further indicate that the model's assumptions 
 # are not being met.
+#--------------------------------------------------------------------------------------------------------#
