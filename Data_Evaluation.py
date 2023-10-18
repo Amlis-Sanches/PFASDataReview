@@ -1,10 +1,11 @@
+#-------------------------------------imported packages
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.stats import ttest_ind
 import statsmodels.api as sm
 
-
+#-------------------------------Import data and clean data
 PFASdata = pd.read_excel(r'C:\Users\natha\Documents\Coding\PFASDataReview\PFAS Project Lab Known Contamination Site Tracker - May 2023 for sharing with lat_long.xlsx', sheet_name='USA Contamination Sites', engine='openpyxl')
 PFAS = pd.DataFrame(PFASdata)
 #print(PFAS.head())
@@ -21,9 +22,10 @@ states_list = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colora
 
 #Check if there are any nan
 print(PFAS['PFAS Level (ppt)'].isnull().sum())
-#Remove rows without PFAS data
+#Remove rows without PFAS data in PFAS levels
 PFAS = PFAS.dropna(subset=['PFAS Level (ppt)'])
 
+#-----------------------------Determine each states number of tests
 
 # Count the number of Sites for each state
 number_of_Sites = PFAS['State'].value_counts()
