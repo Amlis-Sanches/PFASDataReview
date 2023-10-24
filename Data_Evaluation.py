@@ -25,7 +25,13 @@ print(PFAS['PFAS Level (ppt)'].isnull().sum())
 #Remove rows without PFAS data in PFAS levels
 PFAS = PFAS.dropna(subset=['PFAS Level (ppt)'])
 
-#-----------------------------Determine each states number of tests
+#-----------------------------Determine each states number of tests---------------------#
+#Here we find the top states with the most samples. This will allow us to determine     #
+#similarities between the top measured states and with a stronger corolation. Even      #
+#though some states have higher concentrations, the amount of samples that are taken    #
+#are extreamly low. Comparing these states might not be valuble unless more infromation #
+#is found.                                                                              #
+#---------------------------------------------------------------------------------------#
 
 # Count the number of Sites for each state
 number_of_Sites = PFAS['State'].value_counts()
@@ -47,6 +53,11 @@ State_Summary.set_index('State', inplace=True)
 #Calculate the average
 State_Summary['Average Concentration'] = PFAS.groupby('State')['PFAS Level (ppt)'].mean()
 State_Summary['Standard Deviation'] = PFAS.groupby('State')['PFAS Level (ppt)'].std()
+
+#Determine the states that are the best for comparrison are:
+# New Hampshire, Mishigan, California, Minnisota, Maine, Flordia, Vermont, Alaska, New York, North Carolina
+#Although i want to confirm this with analysis to determine states that have the highest & lowest concentrations and highest count for measurment. 
+
 
 #-------------------------------------------------------------#
 #Remove all other locaitons besides States                    #
@@ -194,3 +205,7 @@ print(results.summary())
 # normally distributed. The high Skew and Kurtosis values further indicate that the model's assumptions 
 # are not being met.
 #--------------------------------------------------------------------------------------------------------#
+
+#-------------------------------------------Exporting data
+State_Summary.to_csv("State_Summary.csv", index=True)
+State_Summary.to_excel("State_Summary.xlsx", index=True)
