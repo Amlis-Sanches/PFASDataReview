@@ -1,4 +1,4 @@
-State,Number of Sites,Min Concentration (ppt),Max Concentration (ppt),Concentration Range (ppt),Average Concentration,Standard Deviation
+State,Total Number of Test,Min Concentration (ppt),Max Concentration (ppt),Concentration Range (ppt),Average Concentration,Standard Deviation
 New Hampshire,469,3770.0,540637.0,536867.0,2706.622878464819,30804.980563547248
 Michigan,324,0.52,740000.0,739999.48,19500.829969135804,116435.63853742453
 California,254,0.515,13251.0,13250.485,265353.8850314478,1843530.901903041

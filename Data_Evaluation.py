@@ -25,7 +25,7 @@ print(PFAS['PFAS Level (ppt)'].isnull().sum())
 #Remove rows without PFAS data in PFAS levels
 PFAS = PFAS.dropna(subset=['PFAS Level (ppt)'])
 
-#-----------------------------Determine each states number of tests---------------------#
+#-----------------------------Determine for each states  the total number of tests------#
 #Here we find the top states with the most samples. This will allow us to determine     #
 #similarities between the top measured states and with a stronger corolation. Even      #
 #though some states have higher concentrations, the amount of samples that are taken    #
@@ -33,7 +33,7 @@ PFAS = PFAS.dropna(subset=['PFAS Level (ppt)'])
 #is found.                                                                              #
 #---------------------------------------------------------------------------------------#
 
-# Count the number of Sites for each state
+# Count the Total Number of Test for each state
 number_of_Sites = PFAS['State'].value_counts()
 
 # Compute the min and max concentrations for each state
@@ -43,7 +43,7 @@ concentration_range['range'] = concentration_range['max'] - concentration_range[
 # Combine the data
 State_Summary = pd.DataFrame({
     'State': number_of_Sites.index,
-    'Number of Sites': number_of_Sites.values,
+    'Total Number of Test': number_of_Sites.values,
     'Min Concentration (ppt)': concentration_range['min'].values,
     'Max Concentration (ppt)': concentration_range['max'].values,
     'Concentration Range (ppt)': concentration_range['range'].values
@@ -69,7 +69,7 @@ missing_states = [state for state in states_list if state not in State_Summary.i
 
 # For each missing state, append a new row to the State_Summary dataframe
 for state in missing_states:
-    new_row = {'state': state, 'Number of Sites': 0, 'Concentration Range': 0}  # You can adjust the 'Concentration Range' value as necessary
+    new_row = {'state': state, 'Total Number of Test': 0, 'Concentration Range': 0}  # You can adjust the 'Concentration Range' value as necessary
     State_Summary = State_Summary.append(new_row, ignore_index=True)
 
 #--------------------------------------------------#
@@ -118,7 +118,7 @@ def graph_bar(X_Tick, Data, title='', xlabel ='', ylabel =''):
 
 # graphing tested Sites
 con = 'Concentration (ppt)'
-graph_bar(State_Summary.index, State_Summary['Number of Sites'], 'Number of Test Locations', 'States', 'Number of Sites')
+graph_bar(State_Summary.index, State_Summary['Total Number of Test'], 'Number of Test Locations', 'States', 'Total Number of Test')
 
 #Graph Lowest Concentration
 graph_bar(State_Summary.index, State_Summary['Min Concentration (ppt)'], 'Lowest Recorded Concentration of PFAS', 'States', con)
@@ -142,14 +142,14 @@ graph_bar(State_Summary.index, State_Summary['Average Concentration'], 'Average 
 overlapped_bar(State_Summary[['Min Concentration (ppt)','Max Concentration (ppt)']], show=True,title='Concentration of PFAS per State', xlabel='States', ylabel=con)
 
 plt.figure(figsize=(12,8))
-plt.scatter(State_Summary['Number of Sites'], State_Summary['Average Concentration'])
-plt.xlabel('Number of Sites')
+plt.scatter(State_Summary['Total Number of Test'], State_Summary['Average Concentration'])
+plt.xlabel('Total Number of Test')
 plt.ylabel('Average Concentration(ppt)')
-plt.title('Graphic Visual for Comparison between Number of Sites and Concentration')
+plt.title('Graphic Visual for Comparison between Total Number of Test and Concentration')
 plt.show()
 
 #------------------------------------------Statistics---------------------------------------------------#
-#Performing an analysis to see if there is a corrolation between number of Sites and Average concentration
+#Performing an analysis to see if there is a corrolation between Total Number of Test and Average concentration
 #using a Corelation because it's reviewing the states total number of samples and the PFAS concentration. 
 
 
@@ -171,10 +171,10 @@ plt.show()
 # necessarily mean that the number of samples causes a change in PFAS levels.
 #--------------------------------------------------------------------------------------------------------#
 
-Corr_NOS_AC = State_Summary['Number of Sites'].corr(State_Summary['Average Concentration'])
+Corr_NOS_AC = State_Summary['Total Number of Test'].corr(State_Summary['Average Concentration'])
 print('your corrolation coefficent is',Corr_NOS_AC)
 
-X = State_Summary['Number of Sites']
+X = State_Summary['Total Number of Test']
 y = State_Summary['Average Concentration']
 X = sm.add_constant(X)  # Adds a constant term to the predictor
 
@@ -183,7 +183,7 @@ results = model.fit()
 print(results.summary())
 #--------------------------------------------------------------------------------------------------------#
 #R-squared: This value is 0.009, indicating that only 0.9% of the variability in the average PFAS 
-# concentration is explained by the number of sites. An R2 this low suggests that the model does not fit 
+# concentration is explained by the Total Number of Test. An R2 this low suggests that the model does not fit 
 # your data well.
 #
 #Adjusted R-squared: This value is even slightly negative (-0.011). While R2 will always increase when a 
