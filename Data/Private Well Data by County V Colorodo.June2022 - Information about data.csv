@@ -1,0 +1,5 @@
+Subject,Information
+Units,All units are in ng/L which is the same as parts per trillion (ppt).
+"PFAS results labeled as ""ND"" or <X","In some cases we do not have information on the detection limit for a given sample. In these cases when the result is below the limit of detection you will see ND which stands for ""not detected"". In cases where a limit of detection is available you will see a ""<"" before a number. In this case, the number next to the detection symbol is the highest the lab could detect. "
+"""Not Measured""","If a cell says ""Not Measured"" it means the sample was not tested for that particular compound. "
+"""Not Provided""","If a cell says ""Not Provided"" it means the analyte was measured but that part of the dataset was not provided to CDPHE."
