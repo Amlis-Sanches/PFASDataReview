@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../Python/.git"
+		},
+		{
+			"path": "../Python"
+		},
+		{
+			"path": "../Dash-by-Plotly"
+		}
+	],
+	"settings": {}
+}
