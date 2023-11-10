@@ -1,0 +1,41 @@
+EPA:
+https://awsedap.epa.gov/public/extensions/PFAS_Tools/PFAS_Tools.html
+
+--Sample Methods: https://www.epa.gov/water-research/pfas-analytical-methods-development-and-sampling-research
+
+Overall Data:
+https://static.ewg.org/upload/pdf/UCMR5_PFAS-by-Sample-8.18.23.pdf
+https://partner-mco-archive.s3.amazonaws.com/client_files/1524589484.pdf
+
+Michigan:
+https://egle.maps.arcgis.com/apps/webappviewer/index.html?id=bdec7880220d4ccf943aea13eba102db
+
+New Hampshire:
+https://www.des.nh.gov/resource-center/data-and-mapping/EMD
+https://nhdes.maps.arcgis.com/apps/dashboards/78fe1cb292af4cefbd49f281c43c658d
+
+
+New Jersey:
+https://www.arcgis.com/apps/mapviewer/index.html?layers=a3b00661d9d941e7a551204b25832717
+
+Flordia:
+https://geodata.dep.state.fl.us/datasets/FDEP::eric-pfas-sites-1/about
+https://www.fight4zero.org/pfasmap
+https://floridadep.gov/waste/waste-cleanup/content/fire-training-facility-preliminary-site-assessments
+https://floridadep.gov/waste/waste-cleanup/content/dep%E2%80%99s-efforts-address-pfas-environment
+https://geodata.dep.state.fl.us/datasets/FDEP::university-of-florida-background-surface-soil-metal-study-1998/explore?location=29.521900%2C-83.100253%2C6.76
+https://geodata.dep.state.fl.us/datasets/FDEP::florida-institutional-controls-registry/explore?location=26.821562%2C-78.829307%2C5.00&showTable=true
+
+
+Massachewsids:
+https://www.arcgis.com/apps/mapviewer/index.html?layers=4354999f35b54eef8332790822cddac9
+
+Colorodo:
+https://cohealthviz.dphe.state.co.us/t/EnvironmentalEpidemiologyPublic/views/PFAS_results_DRAFT/Download?%3AshowAppBanner=false&%3Adisplay_count=n&%3AshowVizHome=n&%3Aorigin=viz_share_link&%3AisGuestRedirectFromVizportal=y&%3Aembed=y
+https://docs.google.com/spreadsheets/d/1iDbbccTBZ6HykDxpjf4-W5pfdrtv21nX_iskm54yvHY/edit#gid=1760154921
+https://cohealthviz.dphe.state.co.us/t/EnvironmentalEpidemiologyPublic/views/PFASintreateddrinkingwaterDRAFT/PFASDash?%3Aembed=y&%3Aiid=1&%3AisGuestRedirectFromVizportal=y
+https://cdphe.colorado.gov/pfas-mapping
+
+Wisconsin:
+https://dnr.wisconsin.gov/topic/PFAS/DataViewer
+
